@@ -52,7 +52,7 @@ export class Installer {
 		await exec('git', ['clone', 'https://github.com/getgauge/gauge', gaugeDir])
 		process.chdir(gaugeDir);
 		await exec('go', ['run', join('build', 'make.go')])
-		let toolPath = await cacheDir(join(gaugeDir, 'deploy', 'gauge'), 'gauge', 'master');
+		let toolPath = await cacheDir(join(gaugeDir, 'bin', this.getPlatform() + '_amd64'), 'gauge', 'master');
 		addPath(toolPath);
 	}
 
