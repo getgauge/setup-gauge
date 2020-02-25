@@ -59,11 +59,7 @@ export class Installer {
 
 	private async installPlugins() {
 		for (const plugin of this._plugins) {
-			try {
-				await exec('gauge', ['install', plugin]);
-			} catch (error) {
-				error(`Failed to install gauge plugin ${plugin}. Reason: ${error}`)
-			}
+			await exec('gauge', ['install', plugin]);
 		}
 	}
 
