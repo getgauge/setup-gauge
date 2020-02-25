@@ -17,6 +17,15 @@ export class Installer {
 	}
 
 	public async install() {
+		if (this._version.trim() === 'master') {
+			await this.installFromSource();
+		} else {
+			await this.installReleasedVersion();
+		}
+		await this.installPlugins();
+	}
+
+	private async installReleasedVersion() {
 		info('Downloading gauge from Github releases');
 		const downloadInfo = await this.getDownloadInfo();
 		let toolPath = find('gauge', downloadInfo.version);
@@ -26,7 +35,8 @@ export class Installer {
 			info(`Tool not found in cache. Download tool from url: ${downloadInfo.url}`);
 			let gaugeBin = await downloadTool(downloadInfo.url);
 			info(`Downloaded file: ${gaugeBin}`);
-			let tempDir: string = join(process.env['RUNNER_TEMP'] || '', 'temp_' + Math.floor(Math.random() * 2000000000));
+			let tempDir: string = join(process.env['RUNNER_TEMP'] || '',
+				'temp_' + Math.floor(Math.random() * 2000000000));
 			await this.unzipGaugeDownload(gaugeBin, tempDir);
 			info(`gauge extracted to ${tempDir}`);
 			info(`caching directory containing version ${downloadInfo.version}`);
@@ -34,12 +44,22 @@ export class Installer {
 		}
 		info(`adding gauge to path: ${toolPath}`);
 		addPath(toolPath);
-		this.installPlugins();
 	}
-	private installPlugins() {
+
+	private async installFromSource() {
+		let gaugeDir: string = join(process.env['RUNNER_TEMP'] || '',
+			'temp_' + Math.floor(Math.random() * 2000000000), 'gauge');
+		exec('git', ['clone', 'https://github.com/getgauge/gauge', gaugeDir])
+		process.chdir(gaugeDir);
+		exec('go', ['run', join('build', 'make.go')])
+		let toolPath = await cacheDir(join(gaugeDir, 'deploy', 'gauge'), 'gauge', 'master');
+		addPath(toolPath);
+	}
+
+	private async installPlugins() {
 		for (const plugin of this._plugins) {
 			try {
-				exec('gauge', ['install', plugin]);
+				await exec('gauge', ['install', plugin]);
 			} catch (error) {
 				error(`Failed to install gauge plugin ${plugin}. Reason: ${error}`)
 			}

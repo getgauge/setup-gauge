@@ -43,3 +43,12 @@ with:
     gauge-version: '1.0.7'
     gauge-plugins: java, html-report
 ```
+
+### Install gauge from source
+
+```
+uses: bugdiver/setup-gauge@master
+with:
+    gauge-version: master
+    gauge-plugins: java, html-report
+```
