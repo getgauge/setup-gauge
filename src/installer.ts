@@ -1,4 +1,4 @@
-import { addPath, info } from "@actions/core";
+import { addPath, debug } from "@actions/core";
 import { exec } from "@actions/exec";
 import { mkdirP } from "@actions/io";
 import { cacheDir, downloadTool, extractZip, find } from '@actions/tool-cache';
@@ -27,23 +27,23 @@ export class Installer {
 	}
 
 	private async installReleasedVersion() {
-		info('Downloading gauge from Github releases');
+		debug('Downloading gauge from Github releases');
 		const downloadInfo = await this.getDownloadInfo();
 		let toolPath = find('gauge', downloadInfo.version);
 		if (toolPath) {
-			info(`Tool found in cache ${toolPath}`);
+			debug(`Tool found in cache ${toolPath}`);
 		} else {
-			info(`Tool not found in cache. Download tool from url: ${downloadInfo.url}`);
+			debug(`Tool not found in cache. Download tool from url: ${downloadInfo.url}`);
 			let gaugeBin = await downloadTool(downloadInfo.url);
-			info(`Downloaded file: ${gaugeBin}`);
+			debug(`Downloaded file: ${gaugeBin}`);
 			let tempDir: string = join(process.env['RUNNER_TEMP'] || '',
 				'temp_' + Math.floor(Math.random() * 2000000000));
 			await this.unzipGaugeDownload(gaugeBin, tempDir);
-			info(`gauge extracted to ${tempDir}`);
-			info(`caching directory containing version ${downloadInfo.version}`);
+			debug(`gauge extracted to ${tempDir}`);
+			debug(`caching directory containing version ${downloadInfo.version}`);
 			toolPath = await cacheDir(tempDir, 'gauge', downloadInfo.version);
 		}
-		info(`adding gauge to path: ${toolPath}`);
+		debug(`adding gauge to path: ${toolPath}`);
 		addPath(toolPath);
 	}
 
@@ -64,7 +64,7 @@ export class Installer {
 	}
 
 	private async unzipGaugeDownload(repoRoot: string, destinationFolder: string) {
-		info(`unzip download ${repoRoot}`);
+		debug(`unzip download ${repoRoot}`);
 		await mkdirP(destinationFolder);
 
 		const file = normalize(repoRoot);
@@ -83,7 +83,7 @@ export class Installer {
 	private async getDownloadInfo(): Promise<DownloadInfo> {
 		let platform = this.getPlatform();
 		if (this._version) {
-			info(`Download version = ${this._version}`);
+			debug(`Download version = ${this._version}`);
 			let validVersion = valid(this._version);
 			if (!validVersion) {
 				throw new Error(`No valid download found for version ${this._version}.` +
@@ -94,11 +94,11 @@ export class Installer {
 				version: this._version
 			} as DownloadInfo;
 		} else {
-			info('Downloading latest release because no version selected');
+			debug('Downloading latest release because no version selected');
 			let http: HttpClient = new HttpClient('setup-gauge');
 			let releaseJson = await (await http.get('https://api.github.com/repos/getgauge/gauge/releases/latest')).readBody();
 			let releasesInfo = JSON.parse(releaseJson);
-			info(`latest version = ${releasesInfo.tag_name}`);
+			debug(`latest version = ${releasesInfo.tag_name}`);
 			let latestVersion = releasesInfo.tag_name.substring(1);
 			return {
 				url: `${this.gauge_repo_url}/releases/download/v${latestVersion}/gauge-${latestVersion}-${platform}.x86_64.zip`,
