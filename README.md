@@ -36,8 +36,10 @@ with:
 ```
 
 ### Install plugins with gauge
+
+```
 uses: bugdiver/setup-gauge@master
 with:
     gauge-version: '1.0.7'
-    gauge-plugins: ['java']
+    gauge-plugins: java, html-report
 ```
