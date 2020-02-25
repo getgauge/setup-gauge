@@ -11,6 +11,7 @@ import { HttpClient } from 'typed-rest-client/HttpClient';
 export class Installer {
 	private readonly _plugins: Array<string>;
 	private readonly _version: string;
+	private readonly gauge_repo_url: string = 'https://github.com/getgauge/gauge';
 	constructor(version: string, plugins: string) {
 		this._version = version;
 		this._plugins = this.getPlugins(plugins);
@@ -49,9 +50,9 @@ export class Installer {
 	private async installFromSource() {
 		let gaugeDir: string = join(process.env['RUNNER_TEMP'] || '',
 			'temp_' + Math.floor(Math.random() * 2000000000), 'gauge');
-		await exec('git', ['clone', 'https://github.com/getgauge/gauge', gaugeDir])
+		await exec('git', ['clone', this.gauge_repo_url, gaugeDir])
 		process.chdir(gaugeDir);
-		await exec('go', ['run', join('build', 'make.go')])
+		await exec('go', ['run', join('build', '-mod=vendor', 'make.go')])
 		let toolPath = await cacheDir(join(gaugeDir, 'bin', this.getPlatform() + '_amd64'), 'gauge', 'master');
 		addPath(toolPath);
 	}
@@ -89,10 +90,11 @@ export class Installer {
 			info(`Download version = ${this._version}`);
 			let validVersion = valid(this._version);
 			if (!validVersion) {
-				throw new Error(`No valid download found for version ${this._version}. Check https://github.com/github/hub/releases for a list of valid releases`);
+				throw new Error(`No valid download found for version ${this._version}.` +
+					`Check https://github.com/github/hub/releases for a list of valid releases`);
 			}
 			return {
-				url: `https://github.com/getgauge/gauge/releases/download/v${this._version}/gauge-${this._version}-${platform}.x86_64.zip`,
+				url: `${this.gauge_repo_url}/releases/download/v${this._version}/gauge-${this._version}-${platform}.x86_64.zip`,
 				version: this._version
 			} as DownloadInfo;
 		} else {
@@ -103,7 +105,7 @@ export class Installer {
 			info(`latest version = ${releasesInfo.tag_name}`);
 			let latestVersion = releasesInfo.tag_name.substring(1);
 			return {
-				url: `https://github.com/getgauge/gauge/releases/download/v${latestVersion}/gauge-${latestVersion}-${platform}.x86_64.zip`,
+				url: `${this.gauge_repo_url}/releases/download/v${latestVersion}/gauge-${latestVersion}-${platform}.x86_64.zip`,
 				version: latestVersion
 			} as DownloadInfo;
 		}
