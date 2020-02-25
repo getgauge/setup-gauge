@@ -52,7 +52,7 @@ export class Installer {
 			'temp_' + Math.floor(Math.random() * 2000000000), 'gauge');
 		await exec('git', ['clone', this.gauge_repo_url, gaugeDir])
 		process.chdir(gaugeDir);
-		await exec('go', ['run', join('build', '-mod=vendor', 'make.go')])
+		await exec('go', ['run', '-mod=vendor', join('build', 'make.go')])
 		let toolPath = await cacheDir(join(gaugeDir, 'bin', this.getPlatform() + '_amd64'), 'gauge', 'master');
 		addPath(toolPath);
 	}
