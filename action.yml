@@ -1,0 +1,16 @@
+name: 'Setup Gauge'
+description: 'Setup your Github Actions runner with Gauge CLI'
+author: 'BugDiver'
+branding:
+  icon: 'play'
+  color: 'gray-dark'
+inputs:
+  gauge-version:
+    description: 'Version of gauge release, if not entered will use latest.'
+    required: false
+  gauge-plugins:
+    description: 'Plugins needs to be installed along with gauge. if not entered only gauge will be installed'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
