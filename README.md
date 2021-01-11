@@ -24,13 +24,13 @@ Default: Nothing
 
 ### Install latest
 ```
-uses: bugdiver/setup-gauge@master
+uses: getgauge/setup-gauge@master
 
 ```
 
 ### Install a particular version
 ```
-uses: bugdiver/setup-gauge@master
+uses: getgauge/setup-gauge@master
 with:
     gauge-version: '1.0.7'
 ```
@@ -38,7 +38,7 @@ with:
 ### Install plugins with gauge
 
 ```
-uses: bugdiver/setup-gauge@master
+uses: getgauge/setup-gauge@master
 with:
     gauge-version: '1.0.7'
     gauge-plugins: java, html-report
@@ -47,7 +47,7 @@ with:
 ### Install gauge from source
 
 ```
-uses: bugdiver/setup-gauge@master
+uses: getgauge/setup-gauge@master
 with:
     gauge-version: master
     gauge-plugins: java, html-report
