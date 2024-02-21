@@ -12,5 +12,5 @@ inputs:
     description: 'Plugins needs to be installed along with gauge. if not entered only gauge will be installed'
     required: false
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
