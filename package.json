@@ -1,6 +1,6 @@
 {
   "name": "setup-gauge",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -18,12 +18,13 @@
     "@actions/core": "^1.2.6",
     "@actions/exec": "^1.0.4",
     "@actions/io": "^1.0.2",
-    "@actions/tool-cache": "^1.6.1",
-    "@types/node": "^16.18.11",
+    "@actions/tool-cache": "^2.0.1",
+    "@types/node": "^20.8.9",
     "@types/semver": "^7.3.4",
-    "@zeit/ncc": "^0.21.1",
-    "husky": "^4.3.0",
+    "@vercel/ncc": "^0.38.1",
+    "husky": "^9.0.11",
     "semver": "^7.3.2",
-    "typed-rest-client": "^1.8.0"
+    "typed-rest-client": "^1.8.0",
+    "typescript": "^5.3.3"
   }
 }
