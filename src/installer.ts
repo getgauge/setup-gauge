@@ -53,7 +53,7 @@ export class Installer {
 		await exec('git', ['clone', this.gauge_repo_url, gaugeDir])
 		process.chdir(gaugeDir);
 		await exec('go', ['run', join('build', 'make.go')])
-		let toolPath = await cacheDir(join(gaugeDir, 'bin', this.getPlatform() + '_amd64'), 'gauge', 'master');
+		let toolPath = await cacheDir(join(gaugeDir, 'bin', `${this.getPlatform()}_${this.getExecutableArchitecture()}`), 'gauge', 'master');
 		addPath(toolPath);
 	}
 
@@ -82,6 +82,7 @@ export class Installer {
 
 	private async getDownloadInfo(): Promise<DownloadInfo> {
 		let platform = this.getPlatform();
+		let architecture = this.getDownloadArchitecture();
 		if (this._version) {
 			debug(`Download version = ${this._version}`);
 			let validVersion = valid(this._version);
@@ -90,7 +91,7 @@ export class Installer {
 					`Check https://github.com/github/hub/releases for a list of valid releases`);
 			}
 			return {
-				url: `${this.gauge_repo_url}/releases/download/v${this._version}/gauge-${this._version}-${platform}.x86_64.zip`,
+				url: `${this.gauge_repo_url}/releases/download/v${this._version}/gauge-${this._version}-${platform}.${architecture}.zip`,
 				version: this._version
 			} as DownloadInfo;
 		} else {
@@ -101,7 +102,7 @@ export class Installer {
 			debug(`latest version = ${releasesInfo.tag_name}`);
 			let latestVersion = releasesInfo.tag_name.substring(1);
 			return {
-				url: `${this.gauge_repo_url}/releases/download/v${latestVersion}/gauge-${latestVersion}-${platform}.x86_64.zip`,
+				url: `${this.gauge_repo_url}/releases/download/v${latestVersion}/gauge-${latestVersion}-${platform}.${architecture}.zip`,
 				version: latestVersion
 			} as DownloadInfo;
 		}
@@ -115,6 +116,24 @@ export class Installer {
 				return 'darwin';
 			default:
 				return 'linux'
+		}
+	}
+
+	private getExecutableArchitecture() {
+		switch (process.arch) {
+			case 'x64':
+				return 'amd64';
+			default:
+				return process.arch;
+		}
+	}
+
+	private getDownloadArchitecture() {
+		switch (process.arch) {
+			case 'x64':
+				return 'x86_64';
+			default:
+				return process.arch;
 		}
 	}
 
