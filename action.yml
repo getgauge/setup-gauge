@@ -25,8 +25,7 @@ runs:
         go-version-file: ${{ runner.temp }}/gauge_master/go.mod
         cache-dependency-path: ${{ runner.temp }}/gauge_master/go.sum
     - name: Install Gauge
-      shell: bash
-      run: node ${{ github.action_path }}/dist/index.js
+      uses: ./install-action
       with:
         gauge-version: ${{ inputs.gauge-version }}
         gauge-plugins: ${{ inputs.gauge-plugins }}
