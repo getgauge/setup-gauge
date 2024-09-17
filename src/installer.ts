@@ -48,9 +48,7 @@ export class Installer {
 	}
 
 	private async installFromSource() {
-		let gaugeDir: string = join(process.env['RUNNER_TEMP'] || '',
-			'temp_' + Math.floor(Math.random() * 2000000000), 'gauge');
-		await exec('git', ['clone', this.gauge_repo_url, gaugeDir])
+		let gaugeDir: string = join(process.env['RUNNER_TEMP'] || '', 'gauge_master');
 		process.chdir(gaugeDir);
 		await exec('go', ['run', join('build', 'make.go')])
 		let toolPath = await cacheDir(join(gaugeDir, 'bin', `${this.getPlatform()}_${this.getExecutableArchitecture()}`), 'gauge', 'master');

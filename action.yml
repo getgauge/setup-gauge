@@ -1,6 +1,5 @@
 name: 'Setup Gauge'
 description: 'Setup your Github Actions runner with Gauge CLI'
-author: 'BugDiver'
 branding:
   icon: 'play'
   color: 'gray-dark'
@@ -12,5 +11,21 @@ inputs:
     description: 'Plugins needs to be installed along with gauge. if not entered only gauge will be installed'
     required: false
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+    - name: Checkout getgauge@master
+      if: gauge-version == 'master'
+      uses: actions/checkout@v4
+      with:
+        repository: 'getgauge/gauge'
+        ref: 'master'
+        path: "${{ env.RUNNER_TEMP }}/gauge_master"
+    - name: Install Go
+      if: gauge-version == 'master'
+      uses: actions/setup-go@v5
+      with:
+        check-latest: true
+        go-version-file: "${{ env.RUNNER_TEMP }}/gauge_master/go.mod"
+    - name: Install Gauge
+      using: 'node20'
+      main: 'dist/index.js'
