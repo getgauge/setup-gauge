@@ -12,7 +12,6 @@ It has support for Linux, MacOS and Windows runners.
 **Required** The version needs to be installed.
 
 Default: [`latest`](https://github.com/getgauge/gauge/releases/latest).
-`master` will build Gauge from source off latest code.
 
 ### `gauge-plugins`
 
