@@ -27,3 +27,6 @@ runs:
     - name: Install Gauge
       shell: bash
       run: node ${{ github.action_path }}/dist/index.js
+      with:
+        gauge-version: ${{ inputs.gauge-version }}
+        gauge-plugins: ${{ inputs.gauge-plugins }}
