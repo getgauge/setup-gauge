@@ -14,18 +14,18 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout getgauge@master
-      if: gauge-version == 'master'
+      if: inputs.gauge-version == 'master'
       uses: actions/checkout@v4
       with:
         repository: 'getgauge/gauge'
         ref: 'master'
         path: "${{ env.RUNNER_TEMP }}/gauge_master"
     - name: Install Go
-      if: gauge-version == 'master'
+      if: inputs.gauge-version == 'master'
       uses: actions/setup-go@v5
       with:
         check-latest: true
         go-version-file: "${{ env.RUNNER_TEMP }}/gauge_master/go.mod"
+        cache-dependency-path: "${{ env.RUNNER_TEMP }}/gauge_master/go.sum"
     - name: Install Gauge
-      using: 'node20'
-      main: 'dist/index.js'
+      run: node dist/index.js
