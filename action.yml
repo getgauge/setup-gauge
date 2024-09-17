@@ -24,8 +24,10 @@ runs:
         check-latest: true
         go-version-file: ${{ runner.temp }}/gauge_master/go.mod
         cache-dependency-path: ${{ runner.temp }}/gauge_master/go.sum
+    - run: cd ${{ github.action_path }}
+      shell: bash
     - name: Install Gauge
-      uses: ${{ github.action_path }}/install-action
+      uses: ./install-action
       with:
         gauge-version: ${{ inputs.gauge-version }}
         gauge-plugins: ${{ inputs.gauge-plugins }}
