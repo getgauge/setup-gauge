@@ -15,11 +15,8 @@ runs:
   steps:
     - name: Checkout getgauge@master
       if: inputs.gauge-version == 'master'
-      uses: actions/checkout@v4
-      with:
-        repository: 'getgauge/gauge'
-        ref: 'master'
-        path: "${{ runner.temp }}/gauge_master"
+      shell: bash
+      run: git clone https://github.com/getgauge/gauge.git "${{ runner.temp }}/gauge_master"
     - name: Install Go
       if: inputs.gauge-version == 'master'
       uses: actions/setup-go@v5
