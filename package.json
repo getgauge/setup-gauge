@@ -1,6 +1,6 @@
 {
   "name": "setup-gauge",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -15,16 +15,15 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@actions/core": "^1.2.6",
-    "@actions/exec": "^1.0.4",
-    "@actions/io": "^1.0.2",
-    "@actions/tool-cache": "^2.0.1",
-    "@types/node": "^24.6.1",
-    "@types/semver": "^7.3.4",
-    "@vercel/ncc": "^0.38.1",
-    "husky": "^9.0.11",
-    "semver": "^7.3.2",
-    "typed-rest-client": "^2.1.0",
-    "typescript": "^5.3.3"
+    "@actions/core": "^2.0.3",
+    "@actions/exec": "^2.0.0",
+    "@actions/tool-cache": "^3.0.1",
+    "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^24.13.3",
+    "@types/semver": "^7.7.1",
+    "@vercel/ncc": "^0.44.1",
+    "husky": "^9.1.7",
+    "semver": "^7.8.5",
+    "typescript": "^6.0.3"
   }
 }

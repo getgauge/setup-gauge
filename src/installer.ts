@@ -1,11 +1,10 @@
 import { addPath, debug } from "@actions/core";
 import { exec } from "@actions/exec";
-import { mkdirP } from "@actions/io";
 import { cacheDir, downloadTool, extractZip, find } from '@actions/tool-cache';
-import { statSync } from 'fs';
-import { join, normalize } from 'path';
+import { statSync, mkdirSync } from 'node:fs';
+import { join, normalize } from 'node:path';
+import process from 'node:process';
 import { valid } from "semver";
-import { HttpClient } from 'typed-rest-client/HttpClient';
 
 
 export class Installer {
@@ -67,7 +66,7 @@ export class Installer {
 
 	private async unzipGaugeDownload(repoRoot: string, destinationFolder: string) {
 		debug(`unzip download ${repoRoot}`);
-		await mkdirP(destinationFolder);
+		mkdirSync(destinationFolder, { recursive: true });
 
 		const file = normalize(repoRoot);
 		const stats = statSync(file);
@@ -90,7 +89,7 @@ export class Installer {
 			let validVersion = valid(this._version);
 			if (!validVersion) {
 				throw new Error(`No valid download found for version ${this._version}.` +
-					`Check https://github.com/github/hub/releases for a list of valid releases`);
+					`Check https://github.com/getgauge/gauge/releases for a list of valid releases`);
 			}
 			return {
 				url: `${this.gauge_repo_url}/releases/download/v${this._version}/gauge-${this._version}-${platform}.${architecture}.zip`,
@@ -98,13 +97,15 @@ export class Installer {
 			} as DownloadInfo;
 		} else {
 			debug('Downloading latest release because no version selected');
-			let http: HttpClient = new HttpClient('setup-gauge');
-			let headers: { [key: string]: string } = {};
+			let headers: { [key: string]: string } = { 'User-Agent': 'setup-gauge' };
 			if (this._token) {
 				headers['Authorization'] = `Bearer ${this._token}`;
 			}
-			let releaseJson = await (await http.get('https://api.github.com/repos/getgauge/gauge/releases/latest', headers)).readBody();
-			let releasesInfo = JSON.parse(releaseJson);
+			let response = await fetch('https://api.github.com/repos/getgauge/gauge/releases/latest', { headers });
+			if (!response.ok) {
+				throw new Error(`Failed to fetch latest gauge release: ${response.status} ${response.statusText}`);
+			}
+			let releasesInfo = await response.json() as { tag_name: string };
 			debug(`latest version = ${releasesInfo.tag_name}`);
 			let latestVersion = releasesInfo.tag_name.substring(1);
 			return {
