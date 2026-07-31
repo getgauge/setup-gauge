@@ -127,20 +127,26 @@ export class Installer {
 	}
 
 	private getExecutableArchitecture() {
+		// Matches the GOARCH naming used by gauge's build output dir (bin/{os}_{arch}).
 		switch (process.arch) {
 			case 'x64':
 				return 'amd64';
+			case 'arm64':
+				return 'arm64';
 			default:
-				return process.arch;
+				throw new Error(`Unsupported architecture: ${process.arch}`);
 		}
 	}
 
 	private getDownloadArchitecture() {
+		// Matches the suffixes used by gauge release assets (gauge-<version>-<os>.<arch>.zip).
 		switch (process.arch) {
 			case 'x64':
 				return 'x86_64';
+			case 'arm64':
+				return 'arm64';
 			default:
-				return process.arch;
+				throw new Error(`Unsupported architecture: ${process.arch}`);
 		}
 	}
 
