@@ -11,10 +11,12 @@ import { HttpClient } from 'typed-rest-client/HttpClient';
 export class Installer {
 	private readonly _plugins: Array<string>;
 	private readonly _version: string;
+	private readonly _token: string;
 	private readonly gauge_repo_url: string = 'https://github.com/getgauge/gauge';
-	constructor(version: string, plugins: string) {
+	constructor(version: string, plugins: string, token: string) {
 		this._version = version;
 		this._plugins = this.getPlugins(plugins);
+		this._token = token;
 	}
 
 	public async install() {
@@ -97,7 +99,11 @@ export class Installer {
 		} else {
 			debug('Downloading latest release because no version selected');
 			let http: HttpClient = new HttpClient('setup-gauge');
-			let releaseJson = await (await http.get('https://api.github.com/repos/getgauge/gauge/releases/latest')).readBody();
+			let headers: { [key: string]: string } = {};
+			if (this._token) {
+				headers['Authorization'] = `Bearer ${this._token}`;
+			}
+			let releaseJson = await (await http.get('https://api.github.com/repos/getgauge/gauge/releases/latest', headers)).readBody();
 			let releasesInfo = JSON.parse(releaseJson);
 			debug(`latest version = ${releasesInfo.tag_name}`);
 			let latestVersion = releasesInfo.tag_name.substring(1);

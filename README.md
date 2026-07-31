@@ -19,6 +19,14 @@ Default: [`latest`](https://github.com/getgauge/gauge/releases/latest).
 
 Default: Nothing
 
+### `github-token`
+
+**Optional** Token used to authenticate GitHub API requests when looking up gauge releases. Authenticating avoids the low unauthenticated API rate limit that can make release lookups fail intermittently.
+
+The token is only used to read public release metadata from the [`getgauge/gauge`](https://github.com/getgauge/gauge) repository. It does **not** require any permissions or access to your own repositories — any valid token works, including the default one below, and no `permissions:` scopes need to be granted for this action.
+
+Default: [`${{ github.token }}`](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) (the token GitHub Actions provides automatically).
+
 
 ## Example usage
 

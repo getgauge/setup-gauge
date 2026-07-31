@@ -11,6 +11,10 @@ inputs:
   gauge-plugins:
     description: 'Plugins needs to be installed along with gauge. if not entered only gauge will be installed'
     required: false
+  github-token:
+    description: 'Token used to authenticate GitHub API requests when looking up gauge releases. Defaults to the token provided by GitHub Actions to avoid API rate limiting.'
+    required: false
+    default: ${{ github.token }}
 runs:
   using: 'node24'
   main: 'dist/index.js'
